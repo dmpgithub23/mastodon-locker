@@ -70,7 +70,7 @@ gem 'posix-spawn'
 gem 'pundit', '~> 2.1'
 gem 'premailer-rails'
 gem 'rack-attack', '~> 6.5'
-gem 'rack-cors', '~> 1.1', require: 'rack/cors'
+gem 'rack-cors', '~> 2.0', require: 'rack/cors'
 gem 'rails-i18n', '~> 6.0'
 gem 'rails-settings-cached', '~> 0.6'
 gem 'redis', '~> 4.2', require: ['redis', 'redis/connection/hiredis']
