@@ -222,6 +222,15 @@ class ComposeForm extends ImmutablePureComponent {
     }
   }
 
+  displayCost() {
+    if (this.props.showUpload) {
+      return (<CostButtonContainer />);
+    }
+    else {
+      return "";
+    }
+  }
+
   render() {
     const { intl, onPaste, showSearch } = this.props;
     const disabled = this.props.isSubmitting;
@@ -303,7 +312,7 @@ class ComposeForm extends ImmutablePureComponent {
             <PollButtonContainer />
             <PrivacyDropdownContainer />
             <SpoilerButtonContainer />
-			<CostButtonContainer />
+            {this.displayCost()}
           </div>
           <div className='character-counter__wrapper'><CharacterCounter max={500} text={this.getFulltextForCharacterCounting()} /></div>
         </div>
