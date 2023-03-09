@@ -35,13 +35,14 @@ class Api::V1::StatusesController < Api::BaseController
   end
 
   def create
+    cost = current_user.can_upload? ? status_params[:cost_text].to_f * 100 : nil
     @status = PostStatusService.new.call(current_user.account,
                                          text: status_params[:status],
                                          thread: @thread,
                                          media_ids: status_params[:media_ids],
                                          sensitive: status_params[:sensitive],
                                          spoiler_text: status_params[:spoiler_text],
-                                         cost: status_params[:cost_text].to_f * 100,
+                                         cost: cost,
                                          visibility: status_params[:visibility],
                                          scheduled_at: status_params[:scheduled_at],
                                          application: doorkeeper_token.application,
