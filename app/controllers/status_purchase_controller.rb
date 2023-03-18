@@ -10,11 +10,12 @@ class StatusPurchaseController < ApplicationController
 
   def confirm
     redirect_to account_path(current_account) and return if @status_purchase.nil?
-    if params[:member_id]
+    if params[:member_id] and current_account.epoch_member_id.nil?
       current_account.update(epoch_member_id: params[:member_id])
     end
     @status_purchase.update(state: :succeed)
-    redirect_to account_status_path(@status_purchase.account, @status_purchase.status)
+    #TODO: don't hardcode this
+    redirect_to "#{request.base_url}/web/statuses/#{@status_purchase.status.id}"
   end
 
   private
@@ -43,11 +44,7 @@ class StatusPurchaseController < ApplicationController
   end
 
   def epoch_uri(status, status_purchase)
-    if current_account.epoch_member_id.nil?
-      DynamicChargeRequestFactory.charge_x(status.cost / 100, status_purchase.id, request.base_url)
-    else
-      ChargeRequestFactory.new_request(status_purchase.id, status_purchase.amount, current_account.epoch_member_id, account_status_path(status_purchase.account, status_purchase.status), status_purchase_confirm_url(status_purchase.id)).build_uri(Rails.application.credentials[:epoch_hmac])
-    end
+    DynamicChargeRequestFactory.charge_x(status.cost / 100, status_purchase.id, request.base_url, current_account.epoch_member_id)
   end
 
   def set_status_purchase_by_id

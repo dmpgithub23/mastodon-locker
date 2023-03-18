@@ -9,7 +9,7 @@ end
 class Invoice
   attr_writer :client_id
   attr_reader :purchases, :invoice_id
-  attr_accessor :success_url, :return_url
+  attr_accessor :success_url, :return_url, :member_id
 
   def initialize(invoice_id)
     @invoice_id = invoice_id.to_s
@@ -29,6 +29,19 @@ class Invoice
       return_url: @return_url,
     }
   end
+
+  def invoice_attributes_cam_charge
+    {
+      client_id: @client_id,
+      invoice_id: @invoice_id,
+      member_id: @member_id,
+      type: "camcharge",
+      purchases: @purchases.map(&:purchase_attributes),
+      success_url: @success_url,
+      return_url: @return_url,
+    }
+  end
+
 end
 
 class Purchase

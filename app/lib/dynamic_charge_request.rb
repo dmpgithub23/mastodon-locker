@@ -7,17 +7,20 @@ class DynamicChargeRequest
   SHARED_SECRET_KEY = Rails.application.credentials[:epoch_shared_secret]
   API_URL = 'https://join.wnu.com/invoice-push'
 
-  def initialize(invoice, base_url, status_id)
+  def initialize(invoice, base_url, status_id, member_id)
     @invoice = invoice
     @success_url = "#{base_url}/confirm/#{invoice.invoice_id}"
-    @return_url = "#{base_url}/statuses/#{status_id}"
+    @return_url = "#{base_url}/web/statuses/#{status_id}"
+    @member_id = member_id
   end
 
   def run
     @invoice.client_id = CLIENT_ID
     @invoice.success_url = @success_url
     @invoice.return_url = @return_url
-    payload = @invoice.invoice_attributes.to_json
+    @invoice.member_id = @member_id
+
+    payload = @member_id.nil? ? @invoice.invoice_attributes.to_json : @invoice.invoice_attributes_cam_charge.to_json
     authorization_token = create_authorization_token(payload)
     response = Net::HTTP.post(URI(API_URL), payload, 'Authorization' => "Bearer #{authorization_token}", "Content-type" => 'application/json')
 
