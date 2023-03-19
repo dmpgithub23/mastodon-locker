@@ -31,6 +31,7 @@ Rails.application.configure do
   ActiveSupport::Logger.new(STDOUT).tap do |logger|
     logger.formatter = config.log_formatter
     config.logger = ActiveSupport::TaggedLogging.new(logger)
+    config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
   end
 
   # Generate random VAPID keys

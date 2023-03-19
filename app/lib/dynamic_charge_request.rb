@@ -21,6 +21,8 @@ class DynamicChargeRequest
     @invoice.member_id = @member_id
 
     payload = @member_id.nil? ? @invoice.invoice_attributes.to_json : @invoice.invoice_attributes_cam_charge.to_json
+    Rails.logger.warn "run dynamic charge: " + payload.to_s
+
     authorization_token = create_authorization_token(payload)
     response = Net::HTTP.post(URI(API_URL), payload, 'Authorization' => "Bearer #{authorization_token}", "Content-type" => 'application/json')
 
