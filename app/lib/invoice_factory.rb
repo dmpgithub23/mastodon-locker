@@ -1,7 +1,8 @@
 class InvoiceFactory
-  def self.with_one_position(amount, reference_id)
+  def self.with_one_position(amount, site, status_id, account_id)
+    reference_id = status_id.to_s + "-" + account_id.to_s
     invoice = Invoice.new(reference_id)
-    invoice.add_purchase(Purchase.new(amount))
+    invoice.add_purchase(Purchase.new(amount, site))
     invoice
   end
 end
@@ -47,13 +48,15 @@ end
 class Purchase
   attr_reader :amount
 
-  def initialize(amount)
+  def initialize(amount, site)
     @amount = amount
+    @site = site
   end
 
   def purchase_attributes
     {
-      site: 'www.bigbuttbouncetwerk.com',
+      site: @site,
+      #site: 'www.bigbuttbouncetwerk.com',
       billing: {
         currency: 'USD',
         initial: {

@@ -7,9 +7,9 @@ class DynamicChargeRequest
   SHARED_SECRET_KEY = Rails.application.credentials[:epoch_shared_secret]
   API_URL = 'https://join.wnu.com/invoice-push'
 
-  def initialize(invoice, base_url, status_id, member_id)
+  def initialize(invoice, base_url, status_id, account_id, security_hash, member_id)
     @invoice = invoice
-    @success_url = "#{base_url}/confirm/#{invoice.invoice_id}"
+    @success_url = "#{base_url}/confirm/#{status_id}/#{account_id}/#{security_hash}"
     @return_url = "#{base_url}/web/statuses/#{status_id}"
     @member_id = member_id
   end

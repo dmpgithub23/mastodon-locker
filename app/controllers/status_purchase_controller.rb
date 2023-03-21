@@ -1,27 +1,32 @@
 # frozen_string_literal: true
 class StatusPurchaseController < ApplicationController
   before_action :redirect_if_cant_buy!, only: [:new_transaction]
-  before_action :set_status_purchase_by_id, only: [:confirm]
+  before_action :set_purchase_params, only: [:confirm]
 
   def new_transaction
-    status_purchase = create_pending_status_purchase
-    Rails.logger.warn "new_transaction account_id: #{current_account.id}, status_id: #{status_purchase.status.id}, status_purchase_id: #{status_purchase.id}"
-    redirect_to epoch_uri(@status, status_purchase)
+    status = Status.find(params[:status_id])
+    Rails.logger.warn "new_transaction account_id: #{current_account.id}, status_id: #{status.id}"
+    redirect_to epoch_uri(status)
   end
 
   def confirm
-    # TODO: figure out a way to encode this so we don't need to create the pending transaction
-    Rails.logger.warn "confirm account_id: #{current_account.id}, status_id: #{@status_purchase.status.id}, status_purchase_id: #{@status_purchase.id}, member_id: #{params[:member_id]}"
+    Rails.logger.warn "confirm account_id: #{current_account.id}, status_id: #{@status.id}, member_id: #{@member_id}, is_secure: #{@is_secure}"
 
-    redirect_to account_path(current_account) and return if @status_purchase.nil?
-    redirect_to account_path(current_account) and return if @status_purchase.account.id != current_account.id
-    redirect_to account_path(current_account) and return if params[:member_id].nil? 
-    if params[:member_id] and current_account.epoch_member_id.nil?
-      current_account.update(epoch_member_id: params[:member_id])
+    redirect_to account_path(current_account) and return if @is_secure == false
+    redirect_to account_path(current_account) and return if @status.nil?
+    redirect_to account_path(current_account) and return if @param_account.id != current_account.id
+    redirect_to account_path(current_account) and return if @member_id.nil? 
+    if @member_id and current_account.epoch_member_id.nil?
+      current_account.update(epoch_member_id: @member_id)
     end
-    @status_purchase.update(state: :succeed)
+    StatusPurchase.create(
+      account: current_account,
+      state: :succeed,
+      status: @status,
+      amount: @status.cost
+    )
     #TODO: don't hardcode this
-    redirect_to "#{request.base_url}/web/statuses/#{@status_purchase.status.id}"
+    redirect_to "#{request.base_url}/web/statuses/#{@status.id}"
   end
 
   private
@@ -38,22 +43,22 @@ class StatusPurchaseController < ApplicationController
     end
   end
 
-  def create_pending_status_purchase
-    status = Status.find(params[:status_id])
-
-    StatusPurchase.create(
-      account: current_account,
-      state: :pending,
-      status: status,
-      amount: status.cost
-    )
+  def epoch_uri(status)
+    # TODO: make this a env variable
+    site = 'www.bigbuttbouncetwerk.com'
+    DynamicChargeRequestFactory.charge_x(status, current_account, request.base_url, site, get_security_hash(status, current_account))
   end
 
-  def epoch_uri(status, status_purchase)
-    DynamicChargeRequestFactory.charge_x(status.cost / 100, status_purchase.id, request.base_url, current_account.epoch_member_id)
+  def set_purchase_params
+    @status = Status.find(params[:status_id])
+    @param_account = Account.find(params[:account_id])
+    @is_secure = get_security_hash(@status, @param_account) == params[:security_hash]
+    @member_id = params[:member_id]
   end
 
-  def set_status_purchase_by_id
-    @status_purchase = StatusPurchase.find(params[:reference_id])
+  def get_security_hash(status, account)
+    hmac = Rails.env.development? ? 'testhmac' : Rails.application.credentials[:epoch_hmac]
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('md5'), hmac, status.id.to_s + account.id.to_s)
   end
+
 end
