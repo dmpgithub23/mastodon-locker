@@ -24,7 +24,7 @@
           %span.display-name__account
             = acct(status.account)
             = fa_icon('lock') if status.account.locked?
-  - if status.unlocked_for?(current_account)
+  - if status.unlocked_for?(current_account.id)
     .status__content.emojify{ :data => ({ spoiler: current_account&.user&.setting_expand_spoilers ? 'expanded' : 'folded' } if status.spoiler_text?) }<
       - if status.spoiler_text?
         %p<

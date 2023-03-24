@@ -5,9 +5,9 @@ export default function UnlockComponent(props) {
 
   return (<div>
 	<p>
-	Post is locked. Unlock first.
+	Post is locked.
 	</p>
-	<a href={"/buy/" + status.get('id')}>
+	<a class="unlock-link" href={"/buy/" + status.get('id')}>
 	Unlock for $ {status.get('cost')/100}
 	</a>
 	</div>);

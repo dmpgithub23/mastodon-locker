@@ -15,7 +15,7 @@
 
   = account_action_button(status.account)
 
-  - if status.unlocked_for?(current_account)
+  - if status.unlocked_for?(current_account.id)
     .status__content.emojify{ :data => ({ spoiler: current_account&.user&.setting_expand_spoilers ? 'expanded' : 'folded' } if status.spoiler_text?) }<
       - if status.spoiler_text?
         %p<

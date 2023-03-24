@@ -44,8 +44,7 @@ class StatusPurchaseController < ApplicationController
   end
 
   def epoch_uri(status)
-    # TODO: make this a env variable
-    site = 'www.bigbuttbouncetwerk.com'
+    site = ENV["BILLING_SITE_URL"]
     DynamicChargeRequestFactory.charge_x(status, current_account, request.base_url, site, get_security_hash(status, current_account))
   end
 

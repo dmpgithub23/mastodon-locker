@@ -893,6 +893,16 @@
     color: lighten($ui-highlight-color, 8%);
   }
 
+  a.unlock-link {
+    color: #fff;
+    text-decoration: underline;
+    font-weight: 700;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
   .status__content__spoiler-link {
     background: $action-button-color;
 
