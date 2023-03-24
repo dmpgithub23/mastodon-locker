@@ -4,10 +4,8 @@ import { changeComposeCostness } from '../../../actions/compose';
 import { injectIntl, defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  marked: { id: 'compose_form.spoiler.marked', defaultMessage: 'Text is hidden behind warning' },
-  unmarked: { id: 'compose_form.spoiler.unmarked', defaultMessage: 'Text is not hidden' },
-  // marked: { id: 'compose_form.cost.marked', defaultMessage: 'Text is hidden behind warning' },
-  // unmarked: { id: 'compose_form.cost.unmarked', defaultMessage: 'Text is not hidden' },
+  marked: { id: 'compose_form.cost.marked', defaultMessage: 'Remove Cost' },
+  unmarked: { id: 'compose_form.cost.unmarked', defaultMessage: 'Add Cost' },
 });
 
 const mapStateToProps = (state, { intl }) => ({
@@ -20,7 +18,6 @@ const mapStateToProps = (state, { intl }) => ({
 const mapDispatchToProps = dispatch => ({
 
   onClick () {
-    console.log("clicked");
     dispatch(changeComposeCostness());
   },
 
