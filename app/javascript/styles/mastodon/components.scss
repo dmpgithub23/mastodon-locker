@@ -749,6 +749,17 @@
   }
 }
 
+a.unlock-link {
+  color: lighten($ui-highlight-color, 8%);
+  text-decoration: underline;
+  font-weight: 700;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+
 .character-counter {
   cursor: default;
   font-family: $font-sans-serif, sans-serif;
@@ -891,16 +902,6 @@
 
   a.unhandled-link {
     color: lighten($ui-highlight-color, 8%);
-  }
-
-  a.unlock-link {
-    color: #fff;
-    text-decoration: underline;
-    font-weight: 700;
-
-    &:hover {
-      text-decoration: none;
-    }
   }
 
   .status__content__spoiler-link {
